@@ -2,7 +2,7 @@ package com.mensajes;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
+
 
 public class Mensaje implements Serializable {
 	
@@ -12,7 +12,7 @@ public class Mensaje implements Serializable {
 	byte informacion[]; // es el dato siendo enviado. En principio, solo texto.
 	int size;
 	String IDSala;
-	
+	String emisor;
 
 	
 	public Mensaje(String comando, String tipoInformacion, byte[] informacion, int sizeInfo,String IDSala) {
@@ -22,6 +22,7 @@ public class Mensaje implements Serializable {
 		size=sizeInfo;
 		this.IDSala=IDSala;
 	}
+	
 	public Mensaje(String comando, String tipoInformacion, byte[] informacion, int sizeInfo) {
 		this.comando = comando;
 		this.tipoInformacion = tipoInformacion;

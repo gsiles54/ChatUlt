@@ -53,11 +53,12 @@ public class ClientOutputHandler implements Runnable{
 			try {
 				Mensaje msj = siguienteMensaje();
 				enviarMensajeAlCliente(msj);
-				
+				System.out.println("Se envio el msj");
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			}
 		}
 	}

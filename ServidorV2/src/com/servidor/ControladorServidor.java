@@ -89,6 +89,7 @@ public class ControladorServidor {
 					break;
 			}									
 		}
+		
 		if(!flag)
 			System.out.println("No existe la sala");
 			}
@@ -120,13 +121,13 @@ public class ControladorServidor {
 		}
 		logger.enviarLog("Cliente " + entrante.getNombre() + " acaba de entrar al chat.");
 		clientesEnLobby.add(entrante);
-		
+		entrante.iniciarEscucha();
+		entrante.iniciarRespuesta();
 
 		// salaManager.entrarClienteAlLobby(entrante);
 		aTodos_ClienteConectado(entrante);
 		logger.enviarLog("Lista de clientes actualizada. Clientes Actuales: " + clientesEnLobby.size());
-		entrante.iniciarEscucha();
-		entrante.iniciarRespuesta();
+		
 	}
 
 	public synchronized void salirDelLobby(Cliente saliente) {
@@ -149,11 +150,11 @@ public class ControladorServidor {
 				entrante.getNombre().length());
 
 		for (Cliente c : clientesEnLobby) {
-			c.enviarMensaje(mensaje);
+			
 			if (!entrante.equals(c)) {
 				entrante.enviarMensaje(new Mensaje(Comandos.ClienteNuevo, Formato.TEXTO, c.getNombre().getBytes(),
 						c.getNombre().length()));
-			}
+			}//c.enviarMensaje(mensaje);
 		}
 		logger.enviarLog("Se envio a todos el nuevo usuario.");
 	}

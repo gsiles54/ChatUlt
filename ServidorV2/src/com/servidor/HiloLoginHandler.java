@@ -47,17 +47,18 @@ public class HiloLoginHandler implements Runnable {
 			String usuarioRecibido = usuarioYPassword[0];
 			String passwordRecibido = usuarioYPassword[1];
 			usuarioValido = validarUsuario(usuarioRecibido, passwordRecibido);
-			contestarUsuario(usuarioValido);
+			
 			
 			if(usuarioValido) {
 				logger.enviarLog("Usuario "+ usuarioRecibido +" ha entrado al chat.");
 				try {
-					controlador.entrarAlLobby(new Cliente(usuarioRecibido, socket));
-				} catch (IOException e) {
+					controlador.entrarAlLobby(new Cliente(usuarioRecibido, salida,entrada));
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+			contestarUsuario(usuarioValido);
 
 
 		} while (usuarioValido == false);
@@ -90,10 +91,10 @@ public class HiloLoginHandler implements Runnable {
 		return DAO_BaseDeDatos.getInstance().validarUsuario(usuario, password);
 	}
 
-	public void contestarUsuario(boolean usuarioValido) {
+	public void contestarUsuario(boolean usuarioValido) { // REVISAR PARTE CLIENTE DEBE TENER IMPLEMENTADO SWITCH/CADENA DE RESPNB
 
 			if (usuarioValido) {
-				byte[] respuesta = new String("1").getBytes();
+				byte[] respuesta = (new String("1")).getBytes();
 				Mensaje contestacionLogin = new Mensaje(Comandos.LOGIN, Formato.ENTERO, respuesta, 1);
 				salida.enviarMensaje(contestacionLogin);
 

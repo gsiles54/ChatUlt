@@ -23,7 +23,12 @@ public class Cliente {
 		entrada= new ClientInputHandler(socket);
 		salida = new ClientOutputHandler(socket);
 	}
-
+	
+	public Cliente(String _nombre, ClientOutputHandler salida, ClientInputHandler entrada) {
+		this.entrada=entrada;
+		this.nombre=_nombre;
+		this.salida=salida;
+	}
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
@@ -33,11 +38,13 @@ public class Cliente {
 	}
 	
 	public void iniciarEscucha() {
-		entrada.run();
+		Thread t1 = new Thread(entrada);
+		t1.start();
 	}
 	
 	public void iniciarRespuesta() {
-		salida.run();
+		Thread t1 = new Thread(salida);
+		t1.start();
 	}
 	public void enviarMensaje(Mensaje mensaje) {
 		salida.enviarMensaje(mensaje);

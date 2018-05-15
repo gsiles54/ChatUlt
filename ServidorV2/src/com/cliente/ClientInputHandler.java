@@ -41,7 +41,10 @@ public class ClientInputHandler implements Runnable {
 
 				try {
 					mensaje= recibirMensaje();
-					cs.manejarMensaje(mensaje);
+					if(mensaje!=null) {
+						cs.manejarMensaje(mensaje);
+					}
+					
 				} catch (ClassNotFoundException | IOException e) {e.printStackTrace();}
 
 		}
