@@ -42,23 +42,26 @@ public class HiloLoginHandler implements Runnable {
 	@Override
 	public void run() {
 		boolean usuarioValido = false;
+		Cliente c=null;
 		do {
 			String usuarioYPassword[] = getDatosDeUsuario();
 			String usuarioRecibido = usuarioYPassword[0];
 			String passwordRecibido = usuarioYPassword[1];
 			usuarioValido = validarUsuario(usuarioRecibido, passwordRecibido);
 			
-			
+			contestarUsuario(usuarioValido);
 			if(usuarioValido) {
+				
 				logger.enviarLog("Usuario "+ usuarioRecibido +" ha entrado al chat.");
+				c = new Cliente(usuarioRecibido, salida,entrada);
 				try {
-					controlador.entrarAlLobby(new Cliente(usuarioRecibido, salida,entrada));
+					controlador.entrarAlLobby(c);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			contestarUsuario(usuarioValido);
+			
 
 
 		} while (usuarioValido == false);

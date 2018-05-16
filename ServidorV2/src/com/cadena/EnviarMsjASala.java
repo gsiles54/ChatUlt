@@ -19,6 +19,7 @@ public class EnviarMsjASala extends Manejador{
 		else
 		{
 			//siguiente.manejarPeticion(mensaje);
+			System.out.println("Mensaje era: " + mensaje.toString());
 			System.out.println("Agregar mas manejadores");
 		}
 		// TODO Auto-generated method stub

@@ -46,6 +46,7 @@ public class Cliente {
 		Thread t1 = new Thread(salida);
 		t1.start();
 	}
+	
 	public void enviarMensaje(Mensaje mensaje) {
 		salida.enviarMensaje(mensaje);
 	}
