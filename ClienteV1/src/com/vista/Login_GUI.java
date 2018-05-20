@@ -35,7 +35,10 @@ public class Login_GUI extends JFrame {
 	private Checkbox checkbox_1;
 	private Checkbox checkbox;
 	private JLabel lblEstado;
-	private Socket socket;
+	private String username;
+	private String password;
+	private boolean boton=false;
+	
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -43,6 +46,10 @@ public class Login_GUI extends JFrame {
 				try {
 					Login_GUI frame = new Login_GUI();
 					frame.setVisible(true);
+					//Thread.sleep(1000);
+					Socket nSocket=frame.actualizarLabelEstadoConexion();
+					//Thread.sleep(1000);
+					frame.manejarLogin(nSocket,frame);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -52,29 +59,26 @@ public class Login_GUI extends JFrame {
 
 	
 	public Login_GUI()  {
-		Login_GUI thisGui=this;
+		
+
 		crearRecursosGUI();
-		actualizarLabelEstadoConexion();//ESTO ESTA MAL, SI SE PIERDE LA CONEXION, SE PINCHA TODO, por el socket
+		//ESTO ESTA MAL, SI SE PIERDE LA CONEXION, SE PINCHA TODO, por el socket
 		
 		//Meter esto en un thread y fijarse que si el server esta offline, el cliente no se puede loguear mas.
 		//poner esto en un while infinito y agregar un boton para reconectar en el caso que se pierda la conexion.
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//TO-DO VALIDACIONES BASICAS.
-				String nombre=usuario_textField.getText().trim();
-				String pass=String.valueOf(password_textField.getPassword());
-				
-				LoginHandler loginHandler= new LoginHandler(socket,nombre,pass, thisGui);
-				Thread tLoginHandler= new Thread(loginHandler);
-				tLoginHandler.start();
-			}
-		});
+		
 		
 		
 	}
+	public void manejarLogin(Socket socket, Login_GUI log) {
+		LoginHandler loginHandler= new LoginHandler(socket, this);
+		Thread tLoginHandler= new Thread(loginHandler);
+		tLoginHandler.start();
+	}
 
 	
-	private void actualizarLabelEstadoConexion() {
+	protected Socket actualizarLabelEstadoConexion() {
+		Socket socket=null;
 		try {
 			socket = new Socket("localhost",1234); //PARAMETRIZAR ESTO			
 			if(socket.isConnected()) {
@@ -84,10 +88,16 @@ public class Login_GUI extends JFrame {
 		} catch (IOException e) {
 			lblEstado.setText("");
 			lblEstado.setText("Estado: Servidor Offline");
+
+		}
+		finally {
+			return socket;
 		}
 	}
 	
 	private void crearRecursosGUI() {
+
+		
 		setResizable(false);
 		setTitle("Broccoli Chat UNLAM");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -115,6 +125,15 @@ public class Login_GUI extends JFrame {
 		btnNewButton = new JButton("Iniciar Sesion");
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnNewButton.setBounds(43, 377, 202, 34);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//TO-DO VALIDACIONES BASICAS.
+
+				username=usuario_textField.getText().trim();
+				password=String.valueOf(password_textField.getPassword());
+				boton=true;	
+			}
+		});
 		contentPane.add(btnNewButton);
 		
 		usuario_textField = new JTextField();
@@ -166,4 +185,36 @@ public class Login_GUI extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 	}
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+	public synchronized boolean isBoton() {
+		return boton;
+	}
+
+
+	public void setBoton(boolean boton) {
+		this.boton = boton;
+	}
+	
+	
 }

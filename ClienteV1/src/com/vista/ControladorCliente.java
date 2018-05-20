@@ -40,7 +40,7 @@ public class ControladorCliente implements Runnable{
 		copiaClientesEnSalas=new HashMap<String,String>();
 		conversacionesActivas=new HashMap<String,Conversacion>();
 		
-		entradaSalida.escribirMensaje(new Mensaje(Comandos.ClienteNuevo,Formato.TEXTO,
+		entradaSalida.escribirMensaje(new Mensaje(Comandos.ClienteNuevo,
 											userName));
 	}
 
@@ -55,7 +55,6 @@ public class ControladorCliente implements Runnable{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 
 		}
 		

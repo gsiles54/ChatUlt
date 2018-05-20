@@ -1,7 +1,7 @@
 package com.mensajes;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+
 
 
 public class Mensaje implements Serializable {
@@ -22,7 +22,7 @@ public class Mensaje implements Serializable {
 	public Mensaje(String comando, String informacion) {
 		this.comando = comando;
 		this.informacion = informacion;
-		this.IDSala = 0;
+		this.IDSala = -1; //-1 es el lobby por defecto
 	}
 	
 	public String getComando() {

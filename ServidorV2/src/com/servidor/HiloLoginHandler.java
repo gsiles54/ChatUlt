@@ -50,6 +50,7 @@ public class HiloLoginHandler implements Runnable {
 			usuarioValido = validarUsuario(usuarioRecibido, passwordRecibido);
 			
 			contestarUsuario(usuarioValido);
+			
 			if(usuarioValido) {
 				
 				logger.enviarLog("Usuario "+ usuarioRecibido +" ha entrado al chat.");
@@ -59,6 +60,7 @@ public class HiloLoginHandler implements Runnable {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.out.println("Los datos del usuario eran:" + usuarioRecibido + passwordRecibido);
 				}
 			}
 			
@@ -92,16 +94,16 @@ public class HiloLoginHandler implements Runnable {
 	}
 
 	public void contestarUsuario(boolean usuarioValido) { // REVISAR PARTE CLIENTE DEBE TENER IMPLEMENTADO SWITCH/CADENA DE RESPNB
-
+			String respuesta=null;
 			if (usuarioValido) {
-				String respuesta = "1";
+				respuesta = "1";
 				Mensaje contestacionLogin = new Mensaje(Comandos.LOGIN, respuesta);
-				salida.enviarMensaje(contestacionLogin);
+				salida.enviarMensajeAlCliente(contestacionLogin);
 
 			} else {
-				String respuesta ="0";
+			    respuesta ="0";
 				Mensaje contestacionLogin = new Mensaje(Comandos.LOGIN, respuesta);
-				salida.enviarMensaje(contestacionLogin);
+				salida.enviarMensajeAlCliente(contestacionLogin);
 			}
 
 

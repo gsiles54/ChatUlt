@@ -38,7 +38,7 @@ public class ClientOutputHandler implements Runnable{
 		notify();
 	}
 	
-	private synchronized void enviarMensajeAlCliente(Mensaje mensaje) {
+	public synchronized void enviarMensajeAlCliente(Mensaje mensaje) {
 		try {
 			objectOut.writeObject(mensaje);
 		} catch (IOException e) {
@@ -54,7 +54,7 @@ public class ClientOutputHandler implements Runnable{
 			try {
 				Mensaje msj = siguienteMensaje();
 				enviarMensajeAlCliente(msj);
-				System.out.println("Se envio el msj");
+				System.out.println("Se envio el msj " + msj);
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
