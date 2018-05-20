@@ -76,4 +76,21 @@ public class Cliente {
 		return true;
 	}
 
+	public ClientOutputHandler getSalida() {
+		return salida;
+	}
+
+	public void setSalida(ClientOutputHandler salida) {
+		this.salida = salida;
+	}
+
+	public ClientInputHandler getEntrada() {
+		return entrada;
+	}
+
+	public void setEntrada(ClientInputHandler entrada) {
+		this.entrada = entrada;
+	}
+	
+	
 }

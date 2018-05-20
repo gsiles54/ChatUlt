@@ -60,9 +60,9 @@ public class ControladorServidor {
 	}
 	
 	//Recibe el mensaje del input y se fija que garompa hacer con él
-	public synchronized void manejarMensaje(Mensaje mensaje) {
+	public synchronized void manejarMensaje(Mensaje mensaje,Cliente Cli) {
 				Manejador manejador = ensamblarChain();
-				manejador.manejarPeticion(mensaje);
+				manejador.manejarPeticion(mensaje,Cli);
 	}
 	
 	//Emsambla la cadena de manejadores
@@ -78,9 +78,9 @@ public class ControladorServidor {
 
 	/** Los mensajes se envian a una SALA, no a un cliente */
 	/** Si es un mensaje de txt, busca que exista esa sala y realiza broadcast*/
-	public synchronized void enviarMensaje(Mensaje mensaje) {
+	public synchronized void enviarMensajeASala(Mensaje mensaje) {
 		
-		String idSala = mensaje.getIDSala();
+		Integer idSala = mensaje.getIDSala();
 		boolean flag = true;
 		for(Sala s:salas) {
 			if(s.getSalaID().equals(idSala)) {
@@ -98,12 +98,14 @@ public class ControladorServidor {
 		aTodos_ClienteDesconectado(cliente);
 	}
 
-	public synchronized void crearSala(Cliente clienteCreador, String nombreSala, boolean esPrivada) {
-
-		salas.add(new Sala(nombreSala, esPrivada));
-		if (!esPrivada)
-
+	public synchronized Integer crearSala(String nombreSala, boolean esPrivada) {
+		Sala salaNueva =new Sala(nombreSala, esPrivada);
+		salas.add(salaNueva);
+		if (!esPrivada) 
 			aTodos_SalaCreada();
+		
+		return salaNueva.getSalaID();
+			
 	}
 
 	public synchronized void entrarASala(Cliente entrante, String nombreSala) {
@@ -123,7 +125,9 @@ public class ControladorServidor {
 		clientesEnLobby.add(entrante);
 		entrante.iniciarEscucha();
 		entrante.iniciarRespuesta();
-
+		
+		entrante.getEntrada().setCliente(entrante);
+		entrante.getSalida().setCliente(entrante);
 		// salaManager.entrarClienteAlLobby(entrante);
 		aTodos_ClienteConectado(entrante);
 		logger.enviarLog("Lista de clientes actualizada. Clientes Actuales: " + clientesEnLobby.size());
@@ -146,14 +150,12 @@ public class ControladorServidor {
 	// ----------------- EVENTOS A TODOS----------------------
 	private void aTodos_ClienteConectado(Cliente entrante) {
 
-		Mensaje mensaje = new Mensaje(Comandos.ClienteNuevo, Formato.TEXTO, entrante.getNombre().getBytes(),
-				entrante.getNombre().length());
+		Mensaje mensaje = new Mensaje(Comandos.ClienteNuevo, entrante.getNombre());
 
 		for (Cliente c : clientesEnLobby) {
 			
 			if (!entrante.equals(c)) {
-				entrante.enviarMensaje(new Mensaje(Comandos.ClienteNuevo, Formato.TEXTO, c.getNombre().getBytes(),
-						c.getNombre().length()));
+				entrante.enviarMensaje(new Mensaje(Comandos.ClienteNuevo, c.getNombre()));
 			}//c.enviarMensaje(mensaje);
 		}
 		logger.enviarLog("Se envio a todos el nuevo usuario.");

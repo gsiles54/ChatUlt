@@ -8,58 +8,40 @@ public class Mensaje implements Serializable {
 	
 	private static final long serialVersionUID = -5837724430728888410L;
 	String comando;
-	String tipoInformacion;//Texto,audio,fotos,videos.
-	byte informacion[]; // es el dato siendo enviado. En principio, solo texto.
-	int size;
-	String IDSala;
-	String emisor;
+	String informacion; // es el dato siendo enviado. En principio, solo texto.
+	Integer IDSala;
+
 
 	
-	public Mensaje(String comando, String tipoInformacion, byte[] informacion, int sizeInfo,String IDSala) {
+	public Mensaje(String comando,String informacion,Integer IDSala) {
 		this.comando = comando;
-		this.tipoInformacion = tipoInformacion;
 		this.informacion = informacion;
-		size=sizeInfo;
 		this.IDSala=IDSala;
 	}
 	
-	public Mensaje(String comando, String tipoInformacion, byte[] informacion, int sizeInfo) {
+	public Mensaje(String comando, String informacion) {
 		this.comando = comando;
-		this.tipoInformacion = tipoInformacion;
 		this.informacion = informacion;
-		size=sizeInfo;
-		this.IDSala = "lobby";
+		this.IDSala = 0;
 	}
 	
 	public String getComando() {
 		return comando;
 	}
-	
-	public String getTipoInformacion() {
-		return tipoInformacion;
-	}
-	
-	public byte[] getInformacion() {
+		
+	public String getInformacion() {
 		return informacion;
 	}
 	
-	public int getSize() {
-		return size;
-	}
-	
-	public String getIDSala() {
+	public Integer getIDSala() {
 		return IDSala;
 	}
 	
 	@Override
 	public String toString() {
-		try {
-			return new String(informacion,"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+		
+			return this.informacion;
+		
 	}
 	
 	

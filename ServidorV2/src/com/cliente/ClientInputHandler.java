@@ -25,7 +25,7 @@ public class ClientInputHandler implements Runnable {
 	boolean conectado=true;
 	ObjectInputStream objectIn;
 	Socket socket;
-	
+	Cliente cliente;
 	public ClientInputHandler(Socket socket) throws IOException {
 	
 		logger = new LoggerCliente();
@@ -42,7 +42,7 @@ public class ClientInputHandler implements Runnable {
 				try {
 					mensaje= recibirMensaje();
 					if(mensaje!=null) {
-						cs.manejarMensaje(mensaje);
+						cs.manejarMensaje(mensaje,cliente);
 					}
 					
 				} catch (ClassNotFoundException | IOException e) {e.printStackTrace();}
@@ -52,5 +52,9 @@ public class ClientInputHandler implements Runnable {
 	
 	public Mensaje recibirMensaje() throws ClassNotFoundException, IOException {
 		return (Mensaje) objectIn.readObject();
+	}
+	
+	public void setCliente(Cliente cliente) {
+		this.cliente=cliente;
 	}
 }

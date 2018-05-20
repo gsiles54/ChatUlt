@@ -118,7 +118,7 @@ public class Login_GUI extends JFrame {
 		contentPane.add(btnNewButton);
 		
 		usuario_textField = new JTextField();
-		usuario_textField.setText("Maxi");
+		usuario_textField.setText("");
 		usuario_textField.setBounds(58, 179, 131, 20);
 		contentPane.add(usuario_textField);
 		usuario_textField.setColumns(10);

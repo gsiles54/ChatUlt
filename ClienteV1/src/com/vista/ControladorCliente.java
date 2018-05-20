@@ -41,7 +41,7 @@ public class ControladorCliente implements Runnable{
 		conversacionesActivas=new HashMap<String,Conversacion>();
 		
 		entradaSalida.escribirMensaje(new Mensaje(Comandos.ClienteNuevo,Formato.TEXTO,
-											userName.getBytes(),userName.length()));
+											userName));
 	}
 
 	@Override

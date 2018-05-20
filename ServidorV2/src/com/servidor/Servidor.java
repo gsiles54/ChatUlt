@@ -33,18 +33,34 @@ public class Servidor implements Runnable {
 
 	@Override
 	public void run() {// Recibe al nuevo cliente, osea crea el socket y lo envia al hilo loginHandler.
+		Socket nuevoSocket = null;
 		while (corriendo) {
 
 			try {
-				Socket nuevoSocket = serverSocket.accept();
+				nuevoSocket = serverSocket.accept();
 				Thread tNuevoLogin = new Thread(new HiloLoginHandler(nuevoSocket));
 				tNuevoLogin.start();
 				
 				
 			} catch (IOException e) {
 				e.printStackTrace();
+				try {
+					serverSocket.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
+			
 		}
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }

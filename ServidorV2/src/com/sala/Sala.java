@@ -1,6 +1,7 @@
 package com.sala;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.cliente.Cliente;
 import com.mensajes.Mensaje;
@@ -14,13 +15,15 @@ public class Sala {
 	ArrayList<Cliente> clientesEnSala;
 	String nombre; //se lo puede usar como hashTag.
 	boolean esPrivada=false; //Todas las salas son publicas por defecto
-	String salaID;
+	private static AtomicInteger salaID_GENERATOR = new AtomicInteger(100);
+	Integer salaID;
 	Asistente asist;
 	
 	public Sala(String _nombreSala, boolean _esPrivada) {
 		nombre=_nombreSala;
 		esPrivada= _esPrivada;
 		clientesEnSala = new ArrayList<Cliente>();
+		this.salaID=salaID_GENERATOR.getAndIncrement();
 	}
 
 	public void meterCliente(Cliente cli) {
@@ -43,7 +46,7 @@ public class Sala {
 		return esPrivada;
 	}
 	
-	public String getSalaID() {
+	public Integer getSalaID() {
 		return salaID;
 	}
 	

@@ -13,6 +13,7 @@ public class ClientOutputHandler implements Runnable{
 	ObjectOutputStream objectOut;
 	Socket socket;
 	List<Mensaje> lMensaje = new ArrayList<Mensaje>();
+	Cliente cliente;
 	
 	public ClientOutputHandler(Socket socket) throws IOException {
 		this.socket=socket;
@@ -61,5 +62,9 @@ public class ClientOutputHandler implements Runnable{
 				
 			}
 		}
+	}
+	
+	public void setCliente(Cliente cliente) {
+		this.cliente=cliente;
 	}
 }

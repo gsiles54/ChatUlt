@@ -72,13 +72,10 @@ public class HiloLoginHandler implements Runnable {
 		try {
 			
 			Mensaje mensajeRecibido = entrada.recibirMensaje();
-			int cantidadCaracteres = mensajeRecibido.getSize();
-			byte bytesDeUsuario[] = mensajeRecibido.getInformacion();
-
-			System.out.println("Cantidad Caracteres recibidos " + cantidadCaracteres);
-			String userPassword = new String(bytesDeUsuario, "UTF-8");
-			System.out.println(userPassword);
-			return userPassword.split(" ");
+			System.out.println("Cantidad Caracteres recibidos " + mensajeRecibido.toString().length());
+			System.out.println(mensajeRecibido.toString());
+			
+			return mensajeRecibido.toString().split(" ");
 
 		} catch (ClassNotFoundException | IOException e1) {
 			logger.enviarLog("No se pudo recibir los datos de usuario.");
@@ -97,13 +94,13 @@ public class HiloLoginHandler implements Runnable {
 	public void contestarUsuario(boolean usuarioValido) { // REVISAR PARTE CLIENTE DEBE TENER IMPLEMENTADO SWITCH/CADENA DE RESPNB
 
 			if (usuarioValido) {
-				byte[] respuesta = (new String("1")).getBytes();
-				Mensaje contestacionLogin = new Mensaje(Comandos.LOGIN, Formato.ENTERO, respuesta, 1);
+				String respuesta = "1";
+				Mensaje contestacionLogin = new Mensaje(Comandos.LOGIN, respuesta);
 				salida.enviarMensaje(contestacionLogin);
 
 			} else {
-				byte[] respuesta = new String("0").getBytes();
-				Mensaje contestacionLogin = new Mensaje(Comandos.LOGIN, Formato.ENTERO, respuesta, 1);
+				String respuesta ="0";
+				Mensaje contestacionLogin = new Mensaje(Comandos.LOGIN, respuesta);
 				salida.enviarMensaje(contestacionLogin);
 			}
 

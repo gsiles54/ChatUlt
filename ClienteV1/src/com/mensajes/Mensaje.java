@@ -7,14 +7,14 @@ public class Mensaje implements Serializable {
 	private static final long serialVersionUID = -5837724430728888410L;
 	String comando;
 	String tipoInformacion;//Texto,audio,fotos,videos.
-	byte informacion[]; // es el dato siendo enviado. En principio, solo texto.
-	int size;
+	String informacion; // es el dato siendo enviado. En principio, solo texto.
 	
-	public Mensaje(String comando, String tipoInformacion, byte[] informacion, int sizeInfo) {
+	
+	public Mensaje(String comando, String tipoInformacion, String informacion) {
 		this.comando = comando;
 		this.tipoInformacion = tipoInformacion;
 		this.informacion = informacion;
-		size=sizeInfo;
+	
 	}
 	
 	public String getComando() {
@@ -23,10 +23,8 @@ public class Mensaje implements Serializable {
 	public String getTipoInformacion() {
 		return tipoInformacion;
 	}
-	public byte[] getInformacion() {
+	public String getInformacion() {
 		return informacion;
 	}
-	public int getSize() {
-		return size;
-	}
+	
 }

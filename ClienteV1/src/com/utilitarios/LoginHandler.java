@@ -31,11 +31,9 @@ public class LoginHandler implements Runnable {
 	}
 	
 	public void enviarUserPass() {
-		try {
-			byte userPass[]= (userName+" "+password).getBytes("UTF-8");
-			Mensaje credenciales= new Mensaje(Comandos.LOGIN,Formato.TEXTO,userPass,userPass.length);
-			entradaSalida.escribirMensaje(credenciales);
-		} catch (IOException e) {e.printStackTrace();} //INFORMAR GUI/LOG del cliente ?
+		String userPass= userName+" "+password;
+		Mensaje credenciales= new Mensaje(Comandos.LOGIN,Formato.TEXTO,userPass);
+		entradaSalida.escribirMensaje(credenciales);
 	}
 
 	@Override

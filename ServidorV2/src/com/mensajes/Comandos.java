@@ -12,6 +12,6 @@ public class Comandos {
 	public static final String ClienteSaliendo="ClienteSaliendo";
 	public static final String CrearSala="CrearSala";
 	public static final String MensajeASala="MensajeASala";
-	
+	public static final String SalaCreadaExitosamente="SalaExitosa";
 	
 }
