@@ -99,7 +99,7 @@ public class ControladorServidor {
 	}
 
 	public synchronized Integer crearSala(String nombreSala, boolean esPrivada) {
-		Sala salaNueva =new Sala(nombreSala, esPrivada);
+		Sala salaNueva = new Sala(nombreSala, esPrivada);
 		salas.add(salaNueva);
 		if (!esPrivada) 
 			aTodos_SalaCreada();

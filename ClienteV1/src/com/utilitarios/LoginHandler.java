@@ -1,15 +1,13 @@
 package com.utilitarios;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
 import java.net.Socket;
 
 import com.mensajes.Comandos;
-import com.mensajes.Formato;
 import com.mensajes.Mensaje;
+
 import com.vista.Lobby_GUI;
 import com.vista.Login_GUI;
 /*
@@ -59,6 +57,7 @@ public class LoginHandler implements Runnable {
 						
 						int fueExitoso= Integer.parseInt(new String(resultadoLogin.getInformacion()));
 						if(fueExitoso==0) {
+							
 							System.out.println("Credenciales incorrectas, intentelo nuevamente");
 						}else {
 							System.out.println("Credeciales verificadas exitosamente.. Logueandose al sistema.");
@@ -66,6 +65,7 @@ public class LoginHandler implements Runnable {
 							
 							Lobby_GUI lobbyGui= new Lobby_GUI(entradaSalida,userName);
 							lobbyGui.setVisible(true);
+							lobbyGui.getChatLobby().setText("Credeciales verificadas exitosamente.. Logueandose al sistema.");
 							flag=false;
 						}
 					} catch (IOException | ClassNotFoundException e) {e.printStackTrace();} //INFORMAR GUI/LOG

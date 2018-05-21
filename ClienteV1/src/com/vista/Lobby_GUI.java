@@ -8,7 +8,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 
+import com.Cliente.Cliente;
 import com.utilitarios.EntradaSalida;
+import com.utilitarios.HiloOutput;
+
+import java.awt.Rectangle;
+import java.awt.Component;
+import java.awt.Dimension;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Lobby_GUI extends JFrame {
 
@@ -16,18 +28,27 @@ public class Lobby_GUI extends JFrame {
 	private JPanel contentPane;
 	private ControladorCliente controladorCliente;
 	private Thread hiloControladorCliente;
+	private Thread hiloOutput;
 	JList<String> listaClientesConectados;
 	JTree tree;//Describe en teoria Subchats y clientes dentro de esos chats.
-	private String userName;
+	private Cliente cliente;
 	EntradaSalida entradaSalida;
-
+	private JTextArea chatLobby=null;
+	private JTextField chatTextBoxLobby;
+	private boolean chatBox=false;
+	private HiloOutput output;
+	
 	public Lobby_GUI(EntradaSalida _entradaSalida, String _userName) {
 		
 		configurarGUI();
-		userName=_userName;
+		cliente = new Cliente(_userName);
+
 		controladorCliente= new ControladorCliente(_entradaSalida, this,_userName);
 		hiloControladorCliente = new Thread(controladorCliente);
 		hiloControladorCliente.start();
+		output= new HiloOutput(cliente,this,_entradaSalida);
+		hiloOutput = new Thread(output);
+		hiloOutput.start();
 	}
 	
 	void ponerClienteNuevoEnLista(String entrante) {
@@ -62,11 +83,11 @@ public class Lobby_GUI extends JFrame {
 		contentPane.add(lblUsuariosConectados);
 		
 		JLabel lblJlist = new JLabel("JList");
-		lblJlist.setBounds(10, 601, 46, 14);
+		lblJlist.setBounds(10, 482, 46, 14);
 		contentPane.add(lblJlist);
 		
 		JLabel lblJtree = new JLabel("JTree");
-		lblJtree.setBounds(388, 601, 75, 14);
+		lblJtree.setBounds(388, 482, 75, 14);
 		contentPane.add(lblJtree);
 		
 		JLabel lblParaVerEn = new JLabel("Para ver en que sala estan cada usuario");
@@ -74,27 +95,68 @@ public class Lobby_GUI extends JFrame {
 		contentPane.add(lblParaVerEn);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 105, 294, 466);
+		panel.setBounds(10, 105, 294, 366);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(0, 0, 294, 466);
+		scrollPane_1.setBounds(new Rectangle(0, 0, 500, 500));
+		scrollPane_1.setBounds(0, 0, 294, 366);
 		panel.add(scrollPane_1);
 		
 		listaClientesConectados = new JList<String>();
 		scrollPane_1.setViewportView(listaClientesConectados);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(388, 105, 294, 459);
+		panel_1.setBounds(388, 105, 294, 359);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 294, 459);
+		scrollPane.setBounds(0, 0, 294, 359);
 		panel_1.add(scrollPane);
 		
 		tree = new JTree();
 		scrollPane.setViewportView(tree);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(10, 507, 469, 172);
+		contentPane.add(scrollPane_2);
+		
+		chatLobby = new JTextArea();
+		scrollPane_2.setColumnHeaderView(chatLobby);
+		chatLobby.setColumns(1);
+		
+		chatTextBoxLobby = new JTextField();
+		chatTextBoxLobby.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setChatBox(true);
+			}
+		});
+
+		chatTextBoxLobby.setBounds(10, 680, 469, 20);
+		contentPane.add(chatTextBoxLobby);
+		chatTextBoxLobby.setColumns(10);
 	}
+
+	public JTextArea getChatLobby() {
+		return chatLobby;
+	}
+
+
+	public synchronized JTextField getChatTextBoxLobby() {
+		return chatTextBoxLobby;
+	}
+
+
+
+	public synchronized boolean isChatBox() {
+		return chatBox;
+	}
+
+	public void setChatBox(boolean set) {
+		this.chatBox=set;
+	}
+	
+	
 }
