@@ -10,7 +10,8 @@ public class MensajeASala extends Manejador{
 	public void manejarPeticion(Mensaje msj) {
 		// TODO Auto-generated method stub
 		if(msj.getComando().equals(Comandos.MensajeASala)) {
-			cl=ControladorCliente.instance;
+			cl=ControladorCliente.instance; // Hice publica la variable , porque sino es privada y se quiere hacer cl.getInstance() ( cl es nulo
+											// aca porque su constructor es publico y no es un singleton y bueno nada explota re fiero. ( REVISAR)
 			
 			cl.imprimirMsjEnSala(msj);
 		}
