@@ -11,11 +11,11 @@ import java.net.Socket;
  *
  */
 public class LoggerCliente {
-	Socket socket;
-	int puerto = 2018;
-	BufferedWriter out;
+	private static Socket socket;
+	private static  int puerto = 2018;
+	private static  BufferedWriter out;
 
-	public void enviarLog(String mensajeError) {
+	public static void enviarLog(String mensajeError) {
 		try {
 			socket = new Socket("localhost", puerto);
 			out= new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));

@@ -44,12 +44,11 @@ public class Login_GUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Login_GUI frame = new Login_GUI();
-					frame.setVisible(true);
-					//Thread.sleep(1000);
-					Socket nSocket=frame.actualizarLabelEstadoConexion();
-					//Thread.sleep(1000);
-					frame.manejarLogin(nSocket,frame);
+					Login_GUI loginGUI = new Login_GUI();
+					loginGUI.setVisible(true);
+					
+					Socket socket=loginGUI.actualizarLabelEstadoConexion();
+					loginGUI.manejarLogin(socket,loginGUI);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -59,17 +58,11 @@ public class Login_GUI extends JFrame {
 
 	
 	public Login_GUI()  {
-		
 
 		crearRecursosGUI();
-		//ESTO ESTA MAL, SI SE PIERDE LA CONEXION, SE PINCHA TODO, por el socket
-		
-		//Meter esto en un thread y fijarse que si el server esta offline, el cliente no se puede loguear mas.
-		//poner esto en un while infinito y agregar un boton para reconectar en el caso que se pierda la conexion.
-		
-		
 		
 	}
+	
 	public void manejarLogin(Socket socket, Login_GUI log) {
 		LoginHandler loginHandler= new LoginHandler(socket, this);
 		Thread tLoginHandler= new Thread(loginHandler);

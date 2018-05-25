@@ -1,20 +1,22 @@
 package com.vista;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
+import com.Cliente.Cliente;
 import com.cadena.CrearSala;
-
 import com.cadena.Manejador;
 import com.cadena.MensajeASala;
+import com.cadena.NuevoClienteConectado;
 import com.mensajes.Comandos;
-import com.mensajes.Formato;
 import com.mensajes.Mensaje;
 import com.salas.Sala;
 import com.utilitarios.EntradaSalida;
@@ -28,15 +30,17 @@ import com.utilitarios.EntradaSalida;
 public class ControladorCliente implements Runnable{
 	ArrayList<String> copiaClientesEnLobby; 
 	ArrayList<Sala> copiaSalasDisponibles; //El cliente solo necesita saber el nombre identificativo.
-	HashMap<String,String> copiaClientesEnSalas; // (String:nombre del Cliente ; String:Sala)
+	HashMap<Cliente,ArrayList<Integer>> copiaClientesEnSalas;
+	
 	HashMap<String,Conversacion> conversacionesActivas;
 	ArrayList<JFrame> listaGuis;
 	DefaultListModel<String> modeloLista;
-	EntradaSalida entradaSalida;
+	
+	EntradaSalida entradaSalida; //HACER HILO INPUT, CHAU ENTRADASALIDA
 	Lobby_GUI lobbyGui;
 	private String userName;
-	private static ControladorCliente instance=null;
-	
+	public static ControladorCliente instance=null;
+	Manejador manejador=null;
 	public ControladorCliente(EntradaSalida _entradaSalida, Lobby_GUI _lobbyGUI, String _userName) {
 		listaGuis = new ArrayList<JFrame>();
 		listaGuis.add(_lobbyGUI);
@@ -45,33 +49,38 @@ public class ControladorCliente implements Runnable{
 		entradaSalida=_entradaSalida;
 		modeloLista= new DefaultListModel<String>();
 		copiaClientesEnLobby= new ArrayList<String> ();
-		lobbyGui.listaClientesConectados.setModel(modeloLista);
+		lobbyGui.getListaClientesConectados().setModel(modeloLista);
 		copiaSalasDisponibles=new ArrayList<Sala> ();
 		copiaSalasDisponibles.add(new Sala ("Lobby",false,-1,_lobbyGUI)); // LOBBY
-		copiaClientesEnSalas=new HashMap<String,String>();
+		copiaClientesEnSalas=new HashMap<>();
 		conversacionesActivas=new HashMap<String,Conversacion>();
+		
+		System.out.println("Username es "+userName);
+		//Cliente Nuevo Es para avisar al cliente NO al servidor, de que un cliente se conecto.
+		entradaSalida.escribirMensaje(new Mensaje(Comandos.ClienteNuevo, userName));
+		manejador = ensamblarChain();
 		instance=this;
-		entradaSalida.escribirMensaje(new Mensaje(Comandos.ClienteNuevo,
-											userName));
 	}
 	
-	public ControladorCliente getControlador() {
+	public ControladorCliente getControlador() { //CONSTRUCTOR DEBE SER PRIVADO/PROTECTED, LOS PARAMETROS NECESITAN IRSE
 		
 		return instance;
 	}
 
 	public synchronized void manejarMensaje(Mensaje mensaje) {
-		Manejador manejador = ensamblarChain();
+		
 		manejador.manejarPeticion(mensaje);
 }
 
-//Emsambla la cadena de manejadores
 	private Manejador ensamblarChain() {
 		CrearSala cs = new CrearSala();
 		MensajeASala msj = new MensajeASala();
+		NuevoClienteConectado ncc= new NuevoClienteConectado(lobbyGui, modeloLista,copiaClientesEnLobby);
+		//AGREGAR Comando de Cliente Nuevo Conectado : que agrega al modelList el String del cliente nuevo. Lo mismo para cliente Desconectado
 
 		cs.enlazarSiguiente(msj);
-		return cs;
+		ncc.enlazarSiguiente(cs);
+		return ncc;
 	}
 	
 	@Override
@@ -81,6 +90,7 @@ public class ControladorCliente implements Runnable{
 				
 				try {
 					Mensaje mensajeRecibido = entradaSalida.recibirMensaje();
+					System.out.println(mensajeRecibido.getComando()+" | "+mensajeRecibido.getInformacion());
 					manejarMensaje(mensajeRecibido);
 				} catch (ClassNotFoundException | IOException e) {
 					// TODO Auto-generated catch block
@@ -107,6 +117,7 @@ public class ControladorCliente implements Runnable{
 	
 	public void imprimirMsjEnSala(Mensaje mensaje) {
 		if(mensaje.getIDSala().equals(-1)) {
+			
 			imprimirEnLobby(mensaje);
 		}
 		for(Sala s: copiaSalasDisponibles) {
@@ -122,7 +133,27 @@ public class ControladorCliente implements Runnable{
 	}
 	
 	private void imprimirEnLobby(Mensaje mensaje) {
-		lobbyGui.getChatLobby().setText(mensaje.getInformacion());
+		if(!esParaEsteCliente(mensaje)) {
+				StyledDocument sd = lobbyGui.getChatLobby().getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_LEFT);
+		try {
+			sd.insertString(sd.getLength(), mensaje.getInformacion(), null);
+			sd.setParagraphAttributes(sd.getLength()+1, 1, center, false);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		}
+	
+	}
+
+	private boolean esParaEsteCliente(Mensaje mensaje) {
+		String[] array = mensaje.getInformacion().split(" : ");
+		
+		// TODO Auto-generated method stub
+		return array[0].equals('\n'+userName);
 	}
 
 

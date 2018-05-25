@@ -30,7 +30,6 @@ public class Servidor_GUI extends JFrame {
 	private JButton botonIniciarServidor;
 	private static JTextArea jTextAreaLogs;
 	private Thread hilo_ServerLogger;
-	private LoggerCliente logger;
 
 	static Servidor servidor; // Porque es estatico eso?.
 
@@ -46,7 +45,6 @@ public class Servidor_GUI extends JFrame {
 
 	public Servidor_GUI() {
 		crearUI();
-		logger = new LoggerCliente();
 
 		// -------------BOTON INICIAR SERVIDOR-------
 		botonIniciarServidor.addActionListener(new ActionListener() {
@@ -56,8 +54,8 @@ public class Servidor_GUI extends JFrame {
 					iniciarServidorChat();
 					iniciarServidorDeLogs();
 					
-					logger.enviarLog("Servidor Iniciado.");
-					logger.enviarLog("Esperando por nuevos Clientes.");
+					LoggerCliente.enviarLog("Servidor Iniciado.");
+					LoggerCliente.enviarLog("Esperando por nuevos Clientes.");
 					
 					botonIniciarServidor.setEnabled(false);
 				} catch (IOException e) {

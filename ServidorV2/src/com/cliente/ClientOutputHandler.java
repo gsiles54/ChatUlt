@@ -14,6 +14,7 @@ public class ClientOutputHandler implements Runnable{
 	Socket socket;
 	List<Mensaje> lMensaje = new ArrayList<Mensaje>();
 	Cliente cliente;
+	boolean flag;
 	
 	public ClientOutputHandler(Socket socket) throws IOException {
 		this.socket=socket;
@@ -45,10 +46,10 @@ public class ClientOutputHandler implements Runnable{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run() {
-		boolean flag=true;
+		flag=true;
 		
 		while(flag) {
 			try {
@@ -66,5 +67,15 @@ public class ClientOutputHandler implements Runnable{
 	
 	public void setCliente(Cliente cliente) {
 		this.cliente=cliente;
+	}
+	
+	public void cerrarConexion() {
+		flag=false;
+		try {
+			socket.close();
+		} catch (IOException e) {
+			System.out.println("Socket cerrado , ver cerrar tambien OIS OOS");
+			e.printStackTrace();
+		}
 	}
 }

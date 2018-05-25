@@ -25,24 +25,23 @@ public class HiloLoginHandler implements Runnable {
 	boolean running;
 	ClientOutputHandler salida;
 	ClientInputHandler entrada;
-	Socket socket;
+	//Socket socket;
 	String userName;
 	String password;
-	LoggerCliente logger;
 	ControladorServidor controlador;
 
 	public HiloLoginHandler(Socket _socket) throws IOException {
 		salida = new ClientOutputHandler(_socket);
 		entrada = new ClientInputHandler(_socket);
-		this.socket=_socket;
-		logger = new LoggerCliente();
+		//this.socket=_socket;
+		
 		controlador = ControladorServidor.getInstance();
 	}
 
 	@Override
 	public void run() {
 		boolean usuarioValido = false;
-		Cliente c=null;
+		Cliente clienteNuevo=null;
 		do {
 			String usuarioYPassword[] = getDatosDeUsuario();
 			String usuarioRecibido = usuarioYPassword[0];
@@ -53,12 +52,14 @@ public class HiloLoginHandler implements Runnable {
 			
 			if(usuarioValido) {
 				
-				logger.enviarLog("Usuario "+ usuarioRecibido +" ha entrado al chat.");
-				c = new Cliente(usuarioRecibido, salida,entrada);
+				LoggerCliente.enviarLog("Usuario "+ usuarioRecibido +" ha entrado al chat.");
+				clienteNuevo = new Cliente(usuarioRecibido, salida,entrada);
 				try {
-					controlador.entrarAlLobby(c);
+					controlador.meterEnLobby(clienteNuevo);
+					clienteNuevo.iniciarEscucha();
+					clienteNuevo.iniciarRespuesta();
+					
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					System.out.println("Los datos del usuario eran:" + usuarioRecibido + passwordRecibido);
 				}
@@ -80,7 +81,7 @@ public class HiloLoginHandler implements Runnable {
 			return mensajeRecibido.toString().split(" ");
 
 		} catch (ClassNotFoundException | IOException e1) {
-			logger.enviarLog("No se pudo recibir los datos de usuario.");
+			LoggerCliente.enviarLog("No se pudo recibir los datos de usuario.");
 			e1.printStackTrace();
 		}
 

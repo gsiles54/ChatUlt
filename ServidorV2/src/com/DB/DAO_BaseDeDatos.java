@@ -13,12 +13,12 @@ public class DAO_BaseDeDatos {
 		protected DAO_BaseDeDatos() {
 			listaUsuarios=new ArrayList<Usuario>();
 			listaUsuarios.add(new Usuario("aa","aa"));
-			listaUsuarios.add(new Usuario("ss","ss"));
-			listaUsuarios.add(new Usuario("dd","dd"));
+			listaUsuarios.add(new Usuario("bb","bb"));
+			listaUsuarios.add(new Usuario("cc","cc"));
 			listaUsuarios.add(new Usuario("ee","ee"));
 			listaUsuarios.add(new Usuario("ff","ff"));
-			listaUsuarios.add(new Usuario("qq","qq"));
-			listaUsuarios.add(new Usuario("ww","ww"));
+			listaUsuarios.add(new Usuario("dd","dd"));
+			listaUsuarios.add(new Usuario("gg","gg"));
 	
 			
 		}

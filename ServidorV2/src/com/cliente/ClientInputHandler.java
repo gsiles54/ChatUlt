@@ -3,10 +3,10 @@ package com.cliente;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
 import java.net.Socket;
 
-import com.logs.LoggerCliente;
+import javax.swing.JOptionPane;
+
 import com.mensajes.Mensaje;
 import com.servidor.ControladorServidor;
 
@@ -20,15 +20,14 @@ import com.servidor.ControladorServidor;
 public class ClientInputHandler implements Runnable {
 
 	
-	LoggerCliente logger;
 	Mensaje mensaje;
 	boolean conectado=true;
 	ObjectInputStream objectIn;
 	Socket socket;
-	Cliente cliente;
+	Cliente cliente; //Si un Cliente sabe del socket, y el Socket sabe del Cliente, algo raro hay.
+	
 	public ClientInputHandler(Socket socket) throws IOException {
 	
-		logger = new LoggerCliente();
 		this.socket=socket;
 		objectIn = new ObjectInputStream(socket.getInputStream());
 	}
@@ -42,10 +41,11 @@ public class ClientInputHandler implements Runnable {
 				try {
 					mensaje= recibirMensaje();
 					if(mensaje!=null) {
-						cs.manejarMensaje(mensaje,cliente);
+						System.out.println(mensaje.getComando()+" "+mensaje.getInformacion()+" "+mensaje.getEmisor());
+						cs.manejarMensaje(mensaje);
 					}
 					
-				} catch (ClassNotFoundException | IOException e) {e.printStackTrace();}
+				} catch (ClassNotFoundException | IOException e) {System.out.println("CIH cerrado"); conectado=false;}
 
 		}
 	}

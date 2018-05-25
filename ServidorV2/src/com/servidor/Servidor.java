@@ -41,22 +41,13 @@ public class Servidor implements Runnable {
 				Thread tNuevoLogin = new Thread(new HiloLoginHandler(nuevoSocket));
 				tNuevoLogin.start();
 				
-				
 			} catch (IOException e) {
 				e.printStackTrace();
-				try {
-					serverSocket.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 			}
-			
 		}
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

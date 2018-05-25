@@ -5,6 +5,9 @@ import java.io.IOException;
 
 import java.net.Socket;
 
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
+
 import com.mensajes.Comandos;
 import com.mensajes.Mensaje;
 
@@ -15,10 +18,6 @@ import com.vista.Login_GUI;
  * Ver de enviar esta info por canal encriptado ?
  */
 public class LoginHandler implements Runnable {
-	
-	/**
-	 * 
-	 */
 
 	boolean running;
 	EntradaSalida entradaSalida;
@@ -26,7 +25,6 @@ public class LoginHandler implements Runnable {
 	String password;
 	Login_GUI loginGui;
 
-	
 	//ESTE SOCKET NO LO TENGO Q PERDER!
 	public  LoginHandler(Socket _socket, Login_GUI _loginGui) {
 
@@ -46,6 +44,7 @@ public class LoginHandler implements Runnable {
 		System.out.println("Login Handler Thread Running");
 		boolean flag=true;
 		System.out.println("entrando al bucle");
+		StyledDocument sd;
 			while(flag) {
 				//System.out.println(""); //VAYA A SABER UNO, SI SACO ESTO NO ANDA
 				if(loginGui.isBoton()) {
@@ -63,12 +62,17 @@ public class LoginHandler implements Runnable {
 							System.out.println("Credeciales verificadas exitosamente.. Logueandose al sistema.");
 							loginGui.setVisible(false);
 							
+							
+							//******
+							
+							userName=loginGui.getUsername();
 							Lobby_GUI lobbyGui= new Lobby_GUI(entradaSalida,userName);
 							lobbyGui.setVisible(true);
-							lobbyGui.getChatLobby().setText("Credeciales verificadas exitosamente.. Logueandose al sistema.");
+							sd=lobbyGui.getChatLobby().getStyledDocument();
+							sd.insertString(sd.getLength(), "Credeciales verificadas exitosamente.. Logueandose al sistema.", null);
 							flag=false;
 						}
-					} catch (IOException | ClassNotFoundException e) {e.printStackTrace();} //INFORMAR GUI/LOG
+					} catch (IOException | ClassNotFoundException | BadLocationException e) {e.printStackTrace();} //INFORMAR GUI/LOG
 				
 					}
 				}

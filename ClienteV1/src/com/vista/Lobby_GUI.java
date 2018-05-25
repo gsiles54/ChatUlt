@@ -1,26 +1,28 @@
 package com.vista;
 
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 
 import com.Cliente.Cliente;
+import com.mensajes.Comandos;
+import com.mensajes.Mensaje;
 import com.utilitarios.EntradaSalida;
 import com.utilitarios.HiloOutput;
-
-import java.awt.Rectangle;
-import java.awt.Component;
-import java.awt.Dimension;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JTextPane;
 
 public class Lobby_GUI extends JFrame {
 
@@ -29,20 +31,39 @@ public class Lobby_GUI extends JFrame {
 	private ControladorCliente controladorCliente;
 	private Thread hiloControladorCliente;
 	private Thread hiloOutput;
-	JList<String> listaClientesConectados;
+	private JList<String> listaClientesConectados;
 	JTree tree;//Describe en teoria Subchats y clientes dentro de esos chats.
 	private Cliente cliente;
 	EntradaSalida entradaSalida;
-	private JTextArea chatLobby=null;
+	private JTextPane chatLobby=null;
 	private JTextField chatTextBoxLobby;
 	private boolean chatBox=false;
 	private HiloOutput output;
 	
 	public Lobby_GUI(EntradaSalida _entradaSalida, String _userName) {
+
 		
 		configurarGUI();
 		cliente = new Cliente(_userName);
-
+		entradaSalida=_entradaSalida;
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// HACER QUE CONFIRME SI DESEA SALIR O NO, en vez de cerrar de una.
+				int confirma=JOptionPane.showConfirmDialog(null,
+				        "Realmente desea Salir?", "Realmente desea Salir?", JOptionPane.YES_NO_OPTION);
+				if(confirma==0) {
+				entradaSalida.escribirMensaje(new Mensaje(Comandos.LOGOUT, _userName));
+				System.out.println("SALIIIIDA");
+				dispose();
+				}
+				
+			}
+		});
+		
+		
+		System.out.println("En lovbby gui nombre es "+_userName);
 		controladorCliente= new ControladorCliente(_entradaSalida, this,_userName);
 		hiloControladorCliente = new Thread(controladorCliente);
 		hiloControladorCliente.start();
@@ -50,7 +71,7 @@ public class Lobby_GUI extends JFrame {
 		hiloOutput = new Thread(output);
 		hiloOutput.start();
 	}
-	
+
 	void ponerClienteNuevoEnLista(String entrante) {
 		
 	}
@@ -104,8 +125,8 @@ public class Lobby_GUI extends JFrame {
 		scrollPane_1.setBounds(0, 0, 294, 366);
 		panel.add(scrollPane_1);
 		
-		listaClientesConectados = new JList<String>();
-		scrollPane_1.setViewportView(listaClientesConectados);
+		setListaClientesConectados(new JList<String>());
+		scrollPane_1.setViewportView(getListaClientesConectados());
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(388, 105, 294, 359);
@@ -123,9 +144,9 @@ public class Lobby_GUI extends JFrame {
 		scrollPane_2.setBounds(10, 507, 469, 172);
 		contentPane.add(scrollPane_2);
 		
-		chatLobby = new JTextArea();
+		chatLobby = new JTextPane();
+		
 		scrollPane_2.setColumnHeaderView(chatLobby);
-		chatLobby.setColumns(1);
 		
 		chatTextBoxLobby = new JTextField();
 		chatTextBoxLobby.addActionListener(new ActionListener() {
@@ -139,7 +160,7 @@ public class Lobby_GUI extends JFrame {
 		chatTextBoxLobby.setColumns(10);
 	}
 
-	public JTextArea getChatLobby() {
+	public synchronized JTextPane getChatLobby() {
 		return chatLobby;
 	}
 
@@ -157,6 +178,12 @@ public class Lobby_GUI extends JFrame {
 	public void setChatBox(boolean set) {
 		this.chatBox=set;
 	}
-	
-	
+
+	public JList<String> getListaClientesConectados() {
+		return listaClientesConectados;
+	}
+
+	public void setListaClientesConectados(JList<String> listaClientesConectados) {
+		this.listaClientesConectados = listaClientesConectados;
+	}
 }

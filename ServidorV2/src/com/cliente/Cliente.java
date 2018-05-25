@@ -92,5 +92,9 @@ public class Cliente {
 		this.entrada = entrada;
 	}
 	
+	public void cerrarSockets() {
+		salida.cerrarConexion();
+	}
+	
 	
 }
