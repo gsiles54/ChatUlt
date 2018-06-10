@@ -1,42 +1,33 @@
 package com.Chain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.cliente.Cliente;
 import com.logs.LoggerCliente;
 import com.mensajes.Comandos;
 import com.mensajes.Mensaje;
-import com.servidor.ControladorServidor;
+import com.sala.Sala;
 
 
 
 public class DesconectarCliente extends Chain{
-	
-	ArrayList<Cliente> clientesEnLobby;
-	HashMap<Cliente,ArrayList<Integer>> clientesEnSalas;
-	
-	
 
-	public DesconectarCliente(ArrayList<Cliente> clientesEnLobby,HashMap<Cliente, ArrayList<Integer>> clientesEnSalas) {
-		super();
-		this.clientesEnLobby = clientesEnLobby;
-		this.clientesEnSalas = clientesEnSalas;
+	
+	public DesconectarCliente(ArrayList<Sala> _salas,  ArrayList<Cliente> _clientesEnLobby) {
+		salas=_salas;
+		clientesEnLobby=_clientesEnLobby;
 	}
-
-
-
+	
 	@Override
 	public void manejarPeticion(Mensaje mensaje) {
-		if(mensaje==null)System.out.println("Mensaje Null en DesconectarCliente");
-		if (mensaje.getComando().equals(Comandos.LOGOUT))
-		{           
-			Cliente cliente = getCliente(mensaje.getInformacion());
-			clientesEnSalas.remove(cliente);
-			clientesEnLobby.remove(cliente);
-			
-			aTodos_ClienteDesconectado(cliente);
-			LoggerCliente.enviarLog("Cliente: "+mensaje.getInformacion()+" solicito desconectarse del chat");
+		if (mensaje.getComando().equals(Comandos.LOGOUT)){
+			Cliente clienteSaliente=getClientePorNombre(mensaje.getInformacion());
+			sacarClienteDeSalas(clienteSaliente);
+			clientesEnLobby.remove(clienteSaliente);
+			aTodos_clienteSaliendo(clienteSaliente.getNombre());
+			clienteSaliente.cerrarSockets();
+			LoggerCliente.enviarLog("Cliente: "+clienteSaliente.getNombre()+" solicitó desconectarse del chat");
+			LoggerCliente.enviarLog("Clientes conectados actualmente: "+clientesEnLobby.size());
 		}
 		else
 		{
@@ -44,23 +35,30 @@ public class DesconectarCliente extends Chain{
 		}
 	}
 	
-	private Cliente getCliente(String nombre) {
-		for (Cliente c : clientesEnLobby) {
-			if (c.getNombre().equals(nombre))
+	private void aTodos_clienteSaliendo(String nombreSaliente) {
+		for(Cliente c: clientesEnLobby) {
+			if(!c.getNombre().equals(nombreSaliente)) {
+				c.enviarMensaje(new Mensaje(Comandos.ClienteSaliendo,nombreSaliente));
+			}
+				
+		}
+	}
+	
+	private void sacarClienteDeSalas(Cliente saliente) {
+		int cont=0;
+		for(Sala s: salas) {
+			cont+=s.sacarCliente(saliente);
+			//Verificar si era el ultimo cliente en la sala tambien, si era el ultimo en la sala, borrar sala!!!
+		}
+		LoggerCliente.enviarLog("El cliente: "+saliente.getNombre()+"se encontraba conectado a: "+cont+" salas.");
+	}
+	
+	private Cliente getClientePorNombre(String nombre) {
+		for(Cliente c: clientesEnLobby) {
+			if(c.getNombre().equals(nombre))
 				return c;
 		}
 		return null;
 	}
-	
-	private void aTodos_ClienteDesconectado(Cliente saliente) {
-		int a=0;
-		for(Cliente c: clientesEnLobby) {
-			if(!c.equals(saliente))
-			{
-				c.enviarMensaje(new Mensaje(Comandos.ClienteSaliendo,saliente.getNombre()));
-				//Verificar si era el ultimo cliente en la sala tambien!!!
-			}
-		}
-		LoggerCliente.enviarLog("Acaba de informarse a los clientes que "+saliente.getNombre()+" se ha desconectado.");
-	}
+
 }

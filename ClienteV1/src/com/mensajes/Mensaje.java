@@ -6,50 +6,48 @@ import java.io.Serializable;
 
 public class Mensaje implements Serializable {
 	
-	private static final long serialVersionUID = -5837724430728888410L;
+	private static final long serialVersionUID = 2928832563874494113L;
 	String comando;
 	String informacion; // es el dato siendo enviado. En principio, solo texto.
-	Integer IDSalaDestinatario;
-	String clienteEmisor;
+	Integer salaID;
+	String emisor;
 
-	/**Usado para: Enviar chat a sala  */
-	public Mensaje(String comando,String informacion,Integer IDSala, String emisor) {
-		if(informacion==null) {System.out.println(comando.toString());}
-		this.comando = comando;
-		this.informacion = informacion;
-		this.IDSalaDestinatario=IDSala;
+	/**Usado para: Enviar chat a sala  El cliente no deberia generar ID SALA !*/
+	
+	public Mensaje(String _comando,String _informacion, Integer salaID) {
+		comando = _comando;
+		informacion = _informacion;
+		this.salaID=salaID;
 	}
+
 	/**Usado para: logout */
 	public Mensaje(String comando, String informacion) {
-		if(informacion==null) {System.out.println(comando.toString());}
 		this.comando = comando;
 		this.informacion = informacion;
-		this.IDSalaDestinatario = -1; //-1 es el lobby por defecto
+		this.salaID=-1;
 	}
 	
-	/**Usado para:  */
-	public Mensaje(String comando, String informacion, String emisor) {
-		if(informacion==null) {System.out.println(comando.toString());}
-		this.comando = comando;
-		this.informacion = informacion;
-		this.IDSalaDestinatario = -1; //-1 es el lobby por defecto
-		this.clienteEmisor=emisor;
+	public Mensaje(String _comando,String _informacion,String emisor) {
+		comando = _comando;
+		informacion = _informacion;
+		this.salaID=-1;
+		this.emisor=emisor;
 	}
 	
 	public String getComando() {
 		return comando;
 	}
 	
-	public String getEmisor() {return clienteEmisor;}
-		
+	
 	public String getInformacion() {
 		return informacion;
 	}
 	
 	public Integer getIDSala() {
-		return IDSalaDestinatario;
+		return salaID;
 	}
 	
+
 	@Override
 	public String toString() {
 		

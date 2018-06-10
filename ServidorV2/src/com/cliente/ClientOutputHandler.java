@@ -21,10 +21,6 @@ public class ClientOutputHandler implements Runnable{
 		objectOut=new ObjectOutputStream(socket.getOutputStream());
 	}
 	
-	public void sigueVivo() {
-		//SE DEBERIA MANDAR UN MENSAJE SI EL CLIENTE ESTA AFK PARA SABER SI LA CONEXION SIGUE VIVA
-	}
-	
 	private synchronized Mensaje siguienteMensaje() throws InterruptedException {
 		while(lMensaje.isEmpty())
 			wait();

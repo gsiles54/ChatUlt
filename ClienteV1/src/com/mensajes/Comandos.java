@@ -11,7 +11,9 @@ public class Comandos {
 	public static final String ClienteNuevo="ClienteNuevo";
 	public static final String ClienteSaliendo="ClienteSaliendo";
 	public static final String MensajeASala="MensajeASala";
-	public static final String SalaCreadaExitosamente="SalaExitosa";
-	public static final String CrearSala="CrearSala";
-	
+	public static final String SalaPubCreadaExitosamente="SalaPubExitosa";
+	public static final String SalaPrivCreadaExitosamente="SalaPrivExitosa";
+	public static final String SalaNoCreadaNombreDuplicado="NombreSalaDuplicado";
+	public static final String CrearSalaPublica = "CrearSalaPublica";
+	public static final String CrearSalaPrivada="CrearSalaPrivada";
 }

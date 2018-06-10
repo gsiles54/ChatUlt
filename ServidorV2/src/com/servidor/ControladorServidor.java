@@ -1,7 +1,6 @@
 package com.servidor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.Chain.Chain;
 import com.Chain.CrearSala;
@@ -29,15 +28,12 @@ public class ControladorServidor {
 	private ArrayList<Cliente> clientesEnLobby; // Todos los clientes conectados al chat estan aca. esten o no chateando.
 	private ArrayList<Sala> salas;
 
-	private HashMap<Cliente,ArrayList<Integer>> clientesEnSalas;
-	private HashMap<Integer,String> nombreSalasPorID; //mapea el ID con el nombre de la sala. 
 
-	// TO-DO muchos metodos aca no son publicos, revisar.
 	protected ControladorServidor() {
 		
 		clientesEnLobby = new ArrayList<Cliente>();
 		salas = new ArrayList<Sala>();
-		clientesEnSalas = new HashMap<>();
+		salas.add(new Sala("Lobby"));
 		chain = ensamblarChain();
 	}
 
@@ -53,48 +49,19 @@ public class ControladorServidor {
 		chain.manejarPeticion(mensaje);
 	}
 
-	// Emsambla la cadena de manejadores
 	private Chain ensamblarChain() {
-		CrearSala cs = new CrearSala();
-		DesconectarCliente dc = new DesconectarCliente(clientesEnLobby, clientesEnSalas);
-		EnviarMsjASala msj = new EnviarMsjASala();
+		CrearSala cs = new CrearSala(salas, clientesEnLobby);
+		DesconectarCliente dc = new DesconectarCliente(salas, clientesEnLobby);
+		EnviarMsjASala msj = new EnviarMsjASala(clientesEnLobby, salas);
 
 		cs.enlazarSiguiente(dc);
 		dc.enlazarSiguiente(msj);
 		return cs;
 	}
 
-	public synchronized void enviarMensajeASala(Mensaje mensaje) {
-
-		Integer idSala = mensaje.getIDSala();
-		boolean flag = true;
-		if(mensaje.getIDSala().equals(-1)) {
-			for (Cliente c: clientesEnLobby) {
-				c.enviarMensaje(mensaje);	
-			}flag = false;
-		}
-		for (Sala s : salas) {
-			if (s.getSalaID().equals(idSala)) {
-				s.broadcastSala(mensaje);
-				flag = false;
-				break;
-			}
-		}
-
-		if (!flag)
-			System.out.println("No existe la sala");
-	}
 
 
-	public synchronized Integer crearSala(String nombreSala, boolean esPrivada) {
-		Sala salaNueva = new Sala(nombreSala, esPrivada);
-		salas.add(salaNueva);
-		if (!esPrivada)
-			aTodos_SalaCreada();
 
-		return salaNueva.getSalaID();
-
-	}
 
 	private Cliente getCliente(String nombre) {
 		for (Cliente c : clientesEnLobby) {
@@ -104,26 +71,28 @@ public class ControladorServidor {
 		return null;
 	}
 
-	public synchronized void entrarASala(Cliente entrante, String nombreSala) {
-		aSala_ClienteEntro(entrante, nombreSala);
-	}
-
 	public synchronized void cerrarSala(String nombreSala) {
 		aTodos_SalaCerrada(nombreSala);
 	}
 
 	public synchronized void meterEnLobby(Cliente entrante) {
 		if (clientesEnLobby.contains(entrante)) {
-			LoggerCliente.enviarLog(
-					"FALLO: Cliente " + entrante.getNombre() + " intenta loguearse con usuario ya logueado.");
+			LoggerCliente.enviarLog("FALLO: Cliente " + entrante.getNombre() + " intenta loguearse con usuario ya logueado.");
 			return;
 		}
 		LoggerCliente.enviarLog("Cliente " + entrante.getNombre() + " acaba de entrar al chat.");
 		clientesEnLobby.add(entrante);
+		
+		for(Sala s: salas) {
+			if(s.getNombre().equals("Lobby")) {
+				s.meterCliente(entrante);
+				break;
+			}
+		}
 
 		entrante.getEntrada().setCliente(entrante);
 		entrante.getSalida().setCliente(entrante);
-		// salaManager.entrarClienteAlLobby(entrante);
+		
 		aTodos_ClienteConectado(entrante);
 		LoggerCliente.enviarLog("Lista de clientes actualizada. Clientes Actuales: " + clientesEnLobby.size());
 
@@ -170,13 +139,15 @@ public class ControladorServidor {
 		LoggerCliente.enviarLog("IMPLEMENTAR Controlador.aSala_ClienteEntro");
 	}
 
-	public ArrayList<Cliente> getClientesEnLobby() {
+	public synchronized ArrayList<Cliente> getClientesEnLobby() {
 		return clientesEnLobby;
 	}
-
-	public HashMap<Cliente, ArrayList<Integer>> getClientesEnSalas() {
-		return clientesEnSalas;
+	
+	public synchronized ArrayList<Sala> getSalas() {
+		return salas;
 	}
+
+	
 
 	
 }

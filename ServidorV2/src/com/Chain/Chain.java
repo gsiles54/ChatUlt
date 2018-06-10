@@ -1,14 +1,20 @@
 package com.Chain;
 
+import java.util.ArrayList;
+
 import com.cliente.Cliente;
 import com.mensajes.Mensaje;
+import com.sala.Sala;
 import com.servidor.ControladorServidor;
-/* Aca se implementa la cadena de responsabilidad para manejar los mjs*/
+
+/* Cadena de responsabilidad para manejar los mjs*/
 public abstract class Chain {
+		
+		ArrayList<Cliente> clientesEnLobby;
+		ArrayList<Sala> salas;
+		ControladorServidor cs;
 		protected Chain siguiente;
 
-		ControladorServidor cs=null;
-		
 		public void enlazarSiguiente(Chain sig) {
 			siguiente=sig;
 		}

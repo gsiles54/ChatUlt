@@ -1,49 +1,62 @@
 package com.salas;
 
-import com.vista.Lobby_GUI;
+import java.util.ArrayList;
+
+import com.vista.GUI_Lobby;
+import com.vista.GUI_Sala;
 
 public class Sala {
-
+	
+	ArrayList<String> clientesEnSala;
 	String nombre; //se lo puede usar como hashTag.
 	boolean esPrivada=false; //Todas las salas son publicas por defecto
+	GUI_Sala salaGUI; //¿?
+	GUI_Lobby lobby;
 	Integer salaID;
-	Sala_GUI SalaGUI;
-	Lobby_GUI lobby;
 	
-	public Sala(String nombre, boolean esPrivada, Integer salaID, Sala_GUI salaGUI){
+	public Sala(Integer salaID,String nombre, boolean esPrivada){
 		this.nombre=nombre;
 		this.esPrivada=esPrivada;
 		this.salaID=salaID;
-		this.SalaGUI=salaGUI;
+		clientesEnSala= new ArrayList<String>();
+	}
+	public Sala(Integer salaID,String nombre, boolean esPrivada,GUI_Sala salaGUI){
+		this.nombre=nombre;
+		this.esPrivada=esPrivada;
+		this.salaID=salaID;
+		this.salaGUI=salaGUI;
+		clientesEnSala= new ArrayList<String>();
 	}
 
-	public Sala(String nombre, boolean esPrivada, Integer salaID, Lobby_GUI lobbyGui){
-		this.nombre=nombre;
-		this.esPrivada=esPrivada;
-		this.salaID=salaID;
-		this.lobby=lobbyGui;
-	}
+
 	public String getNombre() {
 		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public boolean isEsPrivada() {
-		return esPrivada;
 	}
 
 	public void setEsPrivada(boolean esPrivada) {
 		this.esPrivada = esPrivada;
 	}
-
-	public Integer getSalaID() {
-		return salaID;
+	
+	public void meterCliente(String cliente) {
+		if(!clientesEnSala.contains(cliente)) {
+			clientesEnSala.add(cliente);
+		}
+	}
+	
+	public void sacarCliente(String cliente) {
+		if(clientesEnSala.contains(cliente)) {
+			clientesEnSala.remove(cliente);
+		}
 	}
 
-
+	public Integer getSalaID() {
 	
+		return salaID;
+	}
+	
+	
+	public GUI_Sala getSalaGui() {
+		return salaGUI;
+	}
 	
 }

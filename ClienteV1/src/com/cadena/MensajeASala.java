@@ -4,21 +4,19 @@ import com.mensajes.Comandos;
 import com.mensajes.Mensaje;
 import com.vista.ControladorCliente;
 
-public class MensajeASala extends Manejador{
+public class MensajeASala extends ChainCliente{
 
 	@Override
 	public void manejarPeticion(Mensaje msj) {
-		// TODO Auto-generated method stub
 		if(msj.getComando().equals(Comandos.MensajeASala)) {
-			cl=ControladorCliente.instance; // Hice publica la variable , porque sino es privada y se quiere hacer cl.getInstance() ( cl es nulo
-											// aca porque su constructor es publico y no es un singleton y bueno nada explota re fiero. ( REVISAR)
-			
-			cl.imprimirMsjEnSala(msj);
+			cl = ControladorCliente.getInstance();
+			cl.imprimirMsj(msj);
 		}
 		else {
-			System.out.println("agregar manej");
-		//	siguiente.manejarPeticion(msj);
+			System.out.println("MensajeASala: agregar manejador siguiente");
 		}
 	}
 
+	
+	
 }

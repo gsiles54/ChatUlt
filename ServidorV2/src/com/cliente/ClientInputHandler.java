@@ -24,7 +24,7 @@ public class ClientInputHandler implements Runnable {
 	boolean conectado=true;
 	ObjectInputStream objectIn;
 	Socket socket;
-	Cliente cliente; //Si un Cliente sabe del socket, y el Socket sabe del Cliente, algo raro hay.
+	Cliente cliente; //Si un Cliente sabe del socket, y el Socket sabe del Cliente, algo raro hay. shhhhhhhhhhhhhhhhhhhhhhh
 	
 	public ClientInputHandler(Socket socket) throws IOException {
 	
@@ -41,7 +41,7 @@ public class ClientInputHandler implements Runnable {
 				try {
 					mensaje= recibirMensaje();
 					if(mensaje!=null) {
-						System.out.println(mensaje.getComando()+" "+mensaje.getInformacion()+" "+mensaje.getEmisor());
+						System.out.println(mensaje.getComando()+" "+mensaje.getInformacion());
 						cs.manejarMensaje(mensaje);
 					}
 					

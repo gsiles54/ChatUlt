@@ -7,16 +7,17 @@ import javax.swing.JList;
 
 import com.mensajes.Comandos;
 import com.mensajes.Mensaje;
-import com.vista.Lobby_GUI;
+import com.salas.Sala;
+import com.vista.GUI_Lobby;
 
-public class NuevoClienteConectado extends Manejador {
+public class NuevoClienteConectado extends ChainCliente {
 	
-	Lobby_GUI lobbyGui;
+	GUI_Lobby lobbyGui;
 	DefaultListModel<String> modeloLista;
 	ArrayList<String> copiaClientesEnLobby; 
 
 
-	public NuevoClienteConectado(Lobby_GUI lobbyGui, DefaultListModel<String> modeloLista, ArrayList<String> _copiaClientesEnLobby) {
+	public NuevoClienteConectado(GUI_Lobby lobbyGui, DefaultListModel<String> modeloLista, ArrayList<String> _copiaClientesEnLobby) {
 		super();
 		this.lobbyGui = lobbyGui;
 		copiaClientesEnLobby=_copiaClientesEnLobby;
@@ -26,14 +27,12 @@ public class NuevoClienteConectado extends Manejador {
 
 	@Override
 	public void manejarPeticion(Mensaje mensaje) {
-		// TODO Auto-generated method stub
+		
 		if(mensaje.getComando().equals(Comandos.ClienteNuevo)) {
 			String usuarioEntrante= new String(mensaje.getInformacion());
-			//if(!modeloLista.contains(usuarioEntrante)) {
 			copiaClientesEnLobby.add(usuarioEntrante);
 			modeloLista.addElement(usuarioEntrante);
 			lobbyGui.getListaClientesConectados().setModel(modeloLista);
-			//}
 		}
 		else {
 			siguiente.manejarPeticion(mensaje);

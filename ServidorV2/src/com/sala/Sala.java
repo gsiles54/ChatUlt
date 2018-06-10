@@ -12,18 +12,25 @@ import com.mensajes.Mensaje;
  *
  */
 public class Sala {
+	
 	ArrayList<Cliente> clientesEnSala;
 	String nombre; //se lo puede usar como hashTag.
 	boolean esPrivada=false; //Todas las salas son publicas por defecto
-	private static AtomicInteger salaID_GENERATOR = new AtomicInteger(100);
-	Integer salaID;
 	Asistente asist;
+	private static final AtomicInteger salaIDGenerator = new AtomicInteger(100);
+	private Integer salaID;
 	
 	public Sala(String _nombreSala, boolean _esPrivada) {
 		nombre=_nombreSala;
 		esPrivada= _esPrivada;
 		clientesEnSala = new ArrayList<Cliente>();
-		this.salaID=salaID_GENERATOR.getAndIncrement();
+		salaID = salaIDGenerator.getAndIncrement();
+	}
+	public Sala(String nombre) {
+		this.nombre = nombre;
+		clientesEnSala = new ArrayList<Cliente>();
+		this.salaID = -1;
+		
 	}
 
 	public void meterCliente(Cliente cli) {
@@ -32,25 +39,16 @@ public class Sala {
 		clientesEnSala.add(cli);
 	}
 	
-	public void sacarCliente(Cliente cli) {
+	public int sacarCliente(Cliente cli) {
 		if (!clientesEnSala.contains(cli))
-			return; // INFORMAR DE USUARIO REPETIDO EN SALA?
+			return 0;
 		clientesEnSala.remove(cli);
+		return 1;
 	}
 	
-	public String getNombre() {
-		return nombre;
-	}
 
-	public boolean esPrivada() {
-		return esPrivada;
-	}
 	
-	public Integer getSalaID() {
-		return salaID;
-	}
-	
-	public void broadcastSala(Mensaje mensaje) {
+	public void enviarMensaje(Mensaje mensaje) {
 		for(Cliente c:clientesEnSala) {
 			c.enviarMensaje(mensaje);
 		}
@@ -81,5 +79,20 @@ public class Sala {
 		return true;
 	}
 	
+	public String getNombre() {
+		return nombre;
+	}
+
+	public boolean esPrivada() {
+		return esPrivada;
+	}
+
+	public Integer getSalaID() {
+		return salaID;
+	}
+
+	public void setSalaID(Integer salaID) {
+		this.salaID = salaID;
+	}
 	
 }
